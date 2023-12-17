@@ -15,7 +15,7 @@ export default function EditorsPage() {
 <div className="flex flex-col">
 {
     [1,2,3,4,5,6,7,8,9,10].map((item) => (
-        <div className="flex items-center justify-between border-b p-2">
+        <div className="flex items-center justify-between border-b p-2" key={item}>
             <div className="flex items-center">
                 
           <Avatar className="h-9 w-9">
