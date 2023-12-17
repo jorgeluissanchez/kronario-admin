@@ -1,42 +1,112 @@
-
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-    } from "@/components/ui/avatar"
-    import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Trash,
+  Pen,
+  Copy
+ } from "lucide-react";
+
+const itemLists = [
+  [
+    {
+      name: "Historia de la computación",
+      tags: [ { name: "Informática" }, { name: "Computación" } ],
+    },
+    {
+      name: "Algoritmos y estructuras de datos",
+      tags: [ { name: "Informática" }, { name: "Computación" } ],
+    },
+    {
+      name: "Física Electricidad y Magnetismo",
+      tags: [ { name: "Física" }, { name: "Electricidad" } ],
+    },
+    {
+      name: "Cálculo Diferencial",
+      tags: [ { name: "Matemáticas" } ],
+    }
+  ],
+  [
+    {
+      name: "Calculo I",
+      tags: [ { name: "Matemáticas" } ],
+    },
+    {
+      name: "Matemáticas Discretas",
+      tags: [ { name: "Matemáticas" }, { name: "Grafos" } ],
+    },
+    {
+      name: "Escritura Creativa",
+      tags: [ { name: "Literatura" }, { name: "Escritura" } ],
+    },
+    {
+      name: "Introducción a la Biología",
+      tags: [ { name: "Biología" } ],
+    }
+  ],
+  [
+    {
+      name: "Estructuras discretas",
+      tags: [ { name: "Computación" }, { name: "Matemáticas" } ],
+    },
+    {
+      name: "Cálculo II",
+      tags: [ { name: "Matemáticas" } ],
+    },
+    {
+      name: "Física Mecánica",
+      tags: [ { name: "Física" } ],
+    },
+    {
+      name: "Introducción a la Química",
+      tags: [ { name: "Química" } ],
+    }
+  ]
+]
+
 
 export default function EditorsPage() {
-    return (
-        <div className="p-4 flex-col space-y-4">
-<Input className="w-full" placeholder="Buscar" />
-{
-    [1,2,3,4,5,6,7,8,9,10].map((item) => (
-        <>
-        <div className="flex items-center justify-between">
-            <div className="flex items-center">
-                
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatars/01.png" alt="Avatar" />
-            <AvatarFallback>OM</AvatarFallback>
-          </Avatar>
-                <div className="ml-4">
-                    <p className="text-md leading-none font-medium">
-                        Olivia Martin</p>
+  return (
+    <div className="flex-col space-y-4 p-4">
+      <Input className="w-full" placeholder="Buscar" />
+      <div className="grid md:grid-cols-3 gap-4">
+        {itemLists.map((itemList, index) => (
+          <div className="grid gap-4" key={"itemList-" + index}>
+          {itemList.map((item) => (
+            <ContextMenu key={item.name}>
+              <ContextMenuTrigger className="border rounded-lg p-4 h-auto">
+                <h1 className="text-xl font-semibold">{item.name}</h1>
+                <div className="flex flex-row space-x-2 mt-4">
+                  {item.tags.map((tag) => (
+                    <Badge key={tag.name}
+                    >{tag.name}</Badge>
+                  ))}
                 </div>
-            </div>
-            <div className="flex items-center space-x-4">
-                <Button variant="outline">Editar</Button>
-                <Button variant="outline">Eliminar</Button>
-            </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent className="w-64">
+                <ContextMenuItem>
+                  <Trash className="h-4 w-4 mr-2" />
+                  Eliminar
+                </ContextMenuItem>
+                <ContextMenuItem>
+                  <Pen className="h-4 w-4 mr-2" />
+                  Editar
+                </ContextMenuItem>
+                <ContextMenuItem>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Duplicar
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          ))}
         </div>
-            <Separator />
-            
-        </>
-    ))
-}
+          ))}
         </div>
-    )
+
+        </div>
+  );
 }

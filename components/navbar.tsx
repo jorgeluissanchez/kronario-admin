@@ -1,40 +1,22 @@
+"use client";
 import Link from "next/link"
-
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { LogOut } from 'lucide-react';
+import { signOut } from "next-auth/react";
 
 export function Navbar({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   return (
-    <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
-      {...props}
-    >
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium transition-colors hover:text-primary"
-      >
-        Overview
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Customers
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Products
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Settings
-      </Link>
-    </nav>
+    <nav className="flex border-b items-center p-4 justify-between">
+    <Link className="text-xl font-semibold tracking-tight" href="/admin">
+      Phylo
+    </Link>
+    <Button variant="ghost" className="flex items-center space-x-2" onClick={() => signOut({ callbackUrl: '/login' })}>
+      <LogOut className="w-4 h-4" strokeWidth={2} />
+      <span>Salir</span>
+    </Button>
+  </nav>
   )
 }

@@ -54,14 +54,6 @@ export function DataTableToolbar<TData>({
             <Cross2Icon className="ml-2 h-4 w-4" />
           </Button>
         )}
-
-        <Button
-          variant="outline"
-          size="sm"
-          className="hidden lg:flex"
-        >
-          Members
-        </Button>
       </div>
       <DataTableViewOptions table={table} />
     </div>

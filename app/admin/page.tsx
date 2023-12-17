@@ -9,7 +9,7 @@ import {
 
 export default function AdminPage() {
   return (
-    <div className="flex flex-col max-h-full p-4 space-y-4 w-full overflow-auto">
+    <div className="flex flex-col max-h-full space-y-4 w-full overflow-auto p-4">
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -113,7 +113,7 @@ export default function AdminPage() {
                   </CardContent>
                 </Card>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
                 <Card className="col-span-3">
                   <CardHeader>
                     <CardTitle>
