@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
+  Pagination,
   SortingState,
   VisibilityState,
   flexRender,
@@ -120,6 +121,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   )
 }

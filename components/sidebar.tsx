@@ -49,11 +49,14 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function Sidebar({ className }: SidebarProps) {
   return (
-    <nav className="p-3 flex space-y-1 w-full h-fit justify-between order-last border-t md:justify-start md:h-full md:w-64 md:flex-col md:border-none md:border-r md:order-first">
+    <nav className="w-full order-last h-fit border-t md:h-full md:w-64 md:border-none md:order-first">
+          <ul className="p-3 flex space-y-1 w-full h-full justify-between md:justify-start md:flex-col md:border-r">
+
       <NavLinks links={links.slice(0, 5)} />
      <div className="w-fit md:w-full  md:flex md:flex-1 md:items-end">
       <NavLinks links={links.slice(5)} />
       </div> 
+      </ul>
     </nav>
   )
 }
