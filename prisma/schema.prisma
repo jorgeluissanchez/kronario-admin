@@ -9,7 +9,7 @@ datasource db {
 }
 
 model VerificationToken {
-    id         Int      @id @default(autoincrement())
+    id         String      @id @default(cuid())
     identifier String
     token      String   @unique
     expires    DateTime
@@ -19,10 +19,10 @@ model VerificationToken {
 
 model Account {
     id                 String  @id @default(cuid())
-    userId             String  @map("user_id")
+    userId             String  
     type               String
     provider           String
-    providerAccountId  String  @map("provider_account_id")
+    providerAccountId  String 
     refresh_token      String? @db.Text
     access_token       String? @db.Text
     expires_at         Int?
@@ -41,10 +41,10 @@ model Account {
 
 model Session {
     id           String   @id @default(cuid())
-    sessionToken String   @unique @map("session_token")
+    sessionToken String   @unique 
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId       String   @map("user_id")
+    userId       String  
 
     @@index([userId])
 }
@@ -59,24 +59,273 @@ model User {
     email         String?     @unique
     emailVerified DateTime?
     image         String?
-    createdAt     DateTime    @default(now()) @map(name: "created_at")
-    updatedAt     DateTime    @updatedAt @map(name: "updated_at")
+    createdAt     DateTime    @default(now()) 
+    updatedAt     DateTime    @updatedAt
     accounts      Account[]
     sessions      Session[]
-
-    posts         Post[]
-
-    @@map(name: "users")
+    profile       Profile?
 }
 
-model Post {
-    id        String      @id @default(cuid())
-    createdAt DateTime    @default(now())
-    updatedAt DateTime    @updatedAt
-    caption   String?
-    fileUrl   String      @unique
-    user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String      @map("user_id")
+model Institution {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  city        String?
+  country     String?
+  zip         String?
+  phone       String?  @unique
+  email       String   @unique
+  website     String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profiles       Profile[]
+  courses     CourseInstitution[]
+}
 
-    @@index([userId])
+model Role {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  description String?
+  isActive  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profiles     Profile[]
+}
+
+model Profile {
+  id            String      @id @default(cuid())
+  isActive      Int         @default(1)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  userId        String      @unique    
+  user          User        @relation(fields: [userId], references: [id])
+  role          Role        @relation(fields: [roleId], references: [id])
+  roleId        String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  institutionId String
+  streakHours   Float       @default(0)
+  courses       CourseProfile[]
+  lessons       LessonProfile[]
+  profileActivities  ProfileActivity[]
+  answers        AnswerProfile[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  courses     Course[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  name        String
+  content     String?
+  reward      String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  institutions CourseInstitution[]
+  profiles       CourseProfile[]
+  units       Unit[]
+}
+
+model CourseInstitution {
+  id               String      @id @default(cuid())
+  isActive         Int         @default(1)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  course           Course      @relation(fields: [courseId], references: [id])
+  courseId         String
+  institution      Institution @relation(fields: [institutionId], references: [id])
+  institutionId    String
+}
+
+model CourseProfile {
+  id               String      @id @default(cuid())
+  isActive         Int         @default(1)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  course           Course      @relation(fields: [courseId], references: [id])
+  courseId         String
+  profile             Profile        @relation(fields: [profileId], references: [id])
+  profileId           String
+}
+
+model Unit {
+  id          String   @id @default(cuid())
+  name        String
+  order       Int
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String
+  lessons     Lesson[]
+}
+
+model LessonType {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  name        String
+  order       Int
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  unit        Unit     @relation(fields: [unitId], references: [id])
+  unitId      String
+  lessonType  LessonType @relation(fields: [lessonTypeId], references: [id])
+  lessonTypeId String
+  test       Test?
+  lecture    Lecture?
+  video       Video?
+  profiles      LessonProfile[]
+}
+
+model Test {
+  id          String   @id @default(cuid())
+  description String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String @unique 
+  questions   Question[]
+}
+
+model QuestionType {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  questions   Question[]
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  test        Test     @relation(fields: [testId], references: [id])
+  testId      String
+  questionType QuestionType @relation(fields: [questionTypeId], references: [id])
+  questionTypeId String 
+  multipleChoice MultipleChoice?
+}
+
+model MultipleChoice {
+  id          String   @id @default(cuid())
+  content    String
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  answers     Answer[]
+  question    Question @relation(fields: [questionId], references: [id])
+  questionId  String @unique
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  content    String
+  isCorrect  Boolean
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  multipleChoice MultipleChoice @relation(fields: [multipleChoiceId], references: [id])
+  multipleChoiceId String
+  answerProfiles AnswerProfile[]
+}
+
+model AnswerProfile {
+  id          String   @id @default(cuid())
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile        Profile     @relation(fields: [profileId], references: [id])
+  profileId      String   
+  answer      Answer   @relation(fields: [answerId], references: [id])
+  answerId    String 
+}
+
+model Lecture {
+  id          String   @id @default(cuid())
+  content String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String   @unique
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  content     String
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String   @unique
+  notes       Note[]
+  extraResources ExtraResource[]
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  name        String
+  content       String
+  description String?
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  video       Video   @relation(fields: [videoId], references: [id])
+  videoId     String
+}
+
+model ExtraResource {
+  id          String   @id @default(cuid())
+  name        String
+  content       String
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  video       Video   @relation(fields: [videoId], references: [id])
+  videoId     String
+}
+
+model LessonProfile {
+  id          String   @id @default(cuid())
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile        Profile     @relation(fields: [profileId], references: [id])
+  profileId      String   
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId    String 
+}
+
+model ProfileActivity {
+  id          String   @id @default(cuid())
+  hours       Float
+  isActive    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile        Profile     @relation(fields: [profileId], references: [id])
+  profileId      String   
 }

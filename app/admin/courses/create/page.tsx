@@ -104,6 +104,7 @@ function CreatePage() {
                                 body: formData,
                               });
                               const { url } = await response.json();
+                              console.log(url);
                               form.setValue("fileUrl", url);
                             } catch (error) {
                               console.error(error);
