@@ -118,7 +118,7 @@ model Category {
   isActive    Int      @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  courses     Course[]
+  courses     CourseCategory[]
 }
 
 model Course {
@@ -129,11 +129,21 @@ model Course {
   isActive    Int      @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
+  categories  CourseCategory[]
   institutions CourseInstitution[]
   profiles       CourseProfile[]
   units       Unit[]
+}
+
+model CourseCategory {
+  id               String      @id @default(cuid())
+  isActive         Int         @default(1)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  course           Course      @relation(fields: [courseId], references: [id])
+  courseId         String
+  category         Category    @relation(fields: [categoryId], references: [id])
+  categoryId       String
 }
 
 model CourseInstitution {
@@ -288,9 +298,7 @@ model Video {
 
 model Note {
   id          String   @id @default(cuid())
-  name        String
   content       String
-  description String?
   isActive    Int      @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -300,7 +308,6 @@ model Note {
 
 model ExtraResource {
   id          String   @id @default(cuid())
-  name        String
   content       String
   isActive    Int      @default(1)
   createdAt   DateTime @default(now())
